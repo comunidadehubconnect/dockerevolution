@@ -1,6 +1,6 @@
 <p align="center">
 <img src="https://cwmkt.com.br/wp-content/uploads/2024/04/logo_github.png" width="240" />
-<p align="center">Seja bem-vindo ao Guia de Instalação Docker Docuseal 🚀</p>
+<p align="center">Seja bem-vindo ao Guia de Instalação Docker Evolution API 🚀</p>
 </p>
   
 <p align="center">
@@ -25,52 +25,94 @@ Colocamos o nome da stack (recomendo deixar evolution)
 #### Cole a stack do Evolution abaixo no seu portainer:
 
 ```bash
-version: "3.8"
-
+version: "3.7"
 services:
-
-  docuseal:
-    image: docuseal/docuseal:latest
-    ports:
-      - "3000:3000"
-    networks:
-      - ecosystem_network
+  evolution_app:
+    image: atendai/evolution-api:v1.7.1 # Altere para versão desejada
+    command: ["node", "./dist/src/main.js"]
     volumes:
-      - docuseal_volume:/data
+    - evolution_instances:/evolution/instances
+    - evolution_store:/evolution/store
+    - evolution_views:/evolution/views
+    networks:
+      - sua_network # Nome da rede que está o traefik
     environment:
-      POSTGRES_HOST: postgresql
-      POSTGRES_USERNAME: user_name
-      POSTGRES_PASSWORD: suasenhapostgres
-      POSTGRES_DATABASE: seu_database
+    - SERVER_URL=https://api.seudominio.com.br 
+    - DOCKER_ENV=true
+    - LOG_LEVEL=ERROR
+    - DEL_INSTANCE=false
+    - CONFIG_SESSION_PHONE_CLIENT=NOME_SESSAO_APP
+    - CONFIG_SESSION_PHONE_NAME=chrome
+    - STORE_MESSAGES=true
+    - STORE_MESSAGE_UP=true
+    - STORE_CONTACTS=true
+    - STORE_CHATS=true
+    - CLEAN_STORE_CLEANING_INTERVAL=7200 # seconds === 2h
+    - CLEAN_STORE_MESSAGES=true
+    - CLEAN_STORE_MESSAGE_UP=true
+    - CLEAN_STORE_CONTACTS=true
+    - CLEAN_STORE_CHATS=true
+    - AUTHENTICATION_TYPE=apikey
+    - AUTHENTICATION_API_KEY=f4e9c72e34fd4485aa9e49295f9cbd8d
+    - AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true
+    - QRCODE_LIMIT=19021
+    - QRCODE_COLOR=#81c244
+    - WEBHOOK_GLOBAL_ENABLED=false
+    - WEBHOOK_GLOBAL_URL=https://URL
+    - WEBHOOK_GLOBAL_WEBHOOK_BY_EVENTS=false
+    - WEBHOOK_EVENTS_APPLICATION_STARTUP=false
+    - WEBHOOK_EVENTS_QRCODE_UPDATED=true
+    - WEBHOOK_EVENTS_MESSAGES_SET=false
+    - WEBHOOK_EVENTS_MESSAGES_UPSERT=true
+    - WEBHOOK_EVENTS_MESSAGES_UPDATE=true
+    - WEBHOOK_EVENTS_CONTACTS_SET=true
+    - WEBHOOK_EVENTS_CONTACTS_UPSERT=true
+    - WEBHOOK_EVENTS_CONTACTS_UPDATE=true
+    - WEBHOOK_EVENTS_PRESENCE_UPDATE=true
+    - WEBHOOK_EVENTS_CHATS_SET=true
+    - WEBHOOK_EVENTS_CHATS_UPSERT=true
+    - WEBHOOK_EVENTS_CHATS_UPDATE=true
+    - WEBHOOK_EVENTS_CHATS_DELETE=true
+    - WEBHOOK_EVENTS_GROUPS_UPSERT=true
+    - WEBHOOK_EVENTS_GROUPS_UPDATE=true
+    - WEBHOOK_EVENTS_GROUP_PARTICIPANTS_UPDATE=true
+    - WEBHOOK_EVENTS_CONNECTION_UPDATE=true
+    - REDIS_ENABLED=false
+    - REDIS_URI=redis://redis:6379
     deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+        - node.role == manager
       labels:
-        - "traefik.enable=true"
-        - "traefik.docker.network=ecosystem_network"
-        - "traefik.http.routers.docuseal.rule=Host(`dodocuseal.seudominio.com.br`)"
-        - "traefik.http.routers.docuseal.tls=true"
-        - "traefik.http.routers.docuseal.entrypoints=websecure"
-        - "traefik.http.routers.docuseal.tls.certresolver=letsencryptresolver"
-        - "traefik.http.routers.docuseal.service=docuseal"
-        - "traefik.http.services.docuseal.loadbalancer.passHostHeader=true"
-        - "traefik.http.services.docuseal.loadbalancer.server.port=3000"
-
+      - traefik.enable=1
+      - traefik.http.routers.evolution_app.rule=Host(`api.seudominio.com.br`)
+      - traefik.http.routers.evolution_app.entrypoints=websecure
+      - traefik.http.routers.evolution_app.priority=1
+      - traefik.http.routers.evolution_app.tls.certresolver=letsencryptresolver
+      - traefik.http.routers.evolution_app.service=evolution_app
+      - traefik.http.services.evolution_app.loadbalancer.server.port=8080
+      - traefik.http.services.evolution_app.loadbalancer.passHostHeader=1
 volumes:
-  docuseal_volume:
+  evolution_instances:
     external: true
-    name: docuseal_volume
+  evolution_store:
+    external: true
+  evolution_views:
+    external: true
 
 networks:
-  ecosystem_network:
+  suat_network:
     external: true
-    name: ecosystem_network
 ```
 
 ### Obs: Lembre-se de alterar campos com as informações necessárias:
 
-POSTGRES_USERNAME: user_name <br>
-POSTGRES_PASSWORD: suasenhapostgres <br>
-POSTGRES_DATABASE: seu_database <br>
-- "traefik.http.routers.docuseal.rule=Host(`dodocuseal.seudominio.com.br`)" <br>
+SERVER_URL: URL para API <br>
+CONFIG_SESSION_PHONE_CLIENT: Nome da sessão no APP do Whatsapp <br>
+sua_network: Nome da rede que está o traefik
+traefik.http.routers.evolution_app.rule=Host(`api.seudominio.com.br`) <br>
 
 Após toda alteração, podemos desativar o Enable access control e clicar em Deploy the stack
 
