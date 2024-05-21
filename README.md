@@ -208,7 +208,7 @@ services:
     - evolution_store:/evolution/store
     - evolution_views:/evolution/views
     networks:
-      - sua_network # Nome da rede que está o traefik
+      - ecosystem_network
     environment:
     - SERVER_URL=https://api.seudominio.com.br 
     - DOCKER_ENV=true
@@ -276,7 +276,7 @@ volumes:
     external: true
 
 networks:
-  suat_network:
+  ecosystem_network:
     external: true
 ```
 
@@ -284,7 +284,6 @@ networks:
 
 SERVER_URL: URL para API <br>
 CONFIG_SESSION_PHONE_CLIENT: Nome da sessão no APP do Whatsapp <br>
-sua_network: Nome da rede que está o traefik
 traefik.http.routers.evolution_app.rule=Host(`api.seudominio.com.br`) <br>
 
 Após toda alteração, podemos desativar o Enable access control e clicar em Deploy the stack
