@@ -12,10 +12,12 @@
 <hr />
 <hr />
 
+### Caso não tenha Portainer e Traefix instalado, siga primeira etapa
+
 <details>
 <summary>Instalando Portainer e Traefix</summary>
 
-**Atualizando Dependências**
+### Atualizando Dependências
 
 Atualize os repositórios do Ubuntu executando o seguinte comando:
 
