@@ -15,11 +15,6 @@
 <details>
 <summary>Instalando Portainer e Traefix</summary>
 
-### Caso não tenha Portainer e Traefix instalado, siga primeira etapa
-
-<details>
-<summary>Instalando Portainer e Traefix</summary>
-
 ### Atualizando Dependências
 
 Atualize os repositórios do Ubuntu executando o seguinte comando:
@@ -179,7 +174,6 @@ docker stack deploy --prune --resolve-image always -c portainer.yml portainer
 ```
 
 Acesse URL de seu Site e Crie Usuario
-
 
 </details>
 
