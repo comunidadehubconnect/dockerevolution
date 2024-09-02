@@ -193,7 +193,7 @@ Colocamos o nome da stack (recomendo deixar evolution)
 version: "3.7"
 services:
   evolution_app:
-    image: atendai/evolution-api:v1.7.1 # Altere para versão desejada
+    image: atendai/evolution-api:v2.1.0 # Altere para versão desejada
     command: ["node", "./dist/src/main.js"]
     volumes:
     - evolution_instances:/evolution/instances
